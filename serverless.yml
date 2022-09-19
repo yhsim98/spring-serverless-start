@@ -1,0 +1,47 @@
+# Service name for use dashboard.serverless.com
+org: thiem
+app: serverless-test-app
+service: serverless-spring-boot
+configValidationMode: off
+
+# specific Serverless Framework version
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: java11
+  region: eu-central-1
+  stage: ${opt:stage, 'dev'}
+  timeout: 15
+
+package:
+  artifact: build/distributions/springboot-serverless-test-0.0.1-SNAPSHOT.zip
+
+functions:
+  getPoint:
+    handler: com.example.serverless.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: point
+          method: get
+          cors: true
+      - schedule:
+          rate: rate(5 minutes)
+  createPoint:
+    handler: com.example.serverless.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: point
+          method: post
+          cors: true
+      - schedule:
+          rate: rate(5 minutes)
+  getError:
+    handler: com.example.serverless.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: point/error
+          method: get
+          cors: true
+      - schedule:
+          rate: rate(5 minutes)
